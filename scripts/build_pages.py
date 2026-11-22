@@ -439,7 +439,8 @@ def build_about(lang: str) -> None:
     body = f'''    <section class="page-hero"><div class="container">{breadcrumb(lang, False, (None, u["about"]))}<h1>{esc(c["about_h1"])}</h1><p>{esc(c["about_lead"])}</p></div></section>
     <div class="preview-strip"><div class="container"><strong>AuraBridge</strong><i aria-hidden="true"></i><span>{esc(c["about_strip"])}</span></div></div>
     <section class="section"><div class="container content-grid"><div><div class="eyebrow">{esc(c["about_eye"])}</div><h2>{esc(c["about_h2"])}</h2></div><div><p class="large-copy">{esc(c["about_large"])}</p><p>{esc(c["about_p1"])}</p><p>{esc(c["about_p2"])}</p></div></div></section>
-    <section class="section tinted"><div class="container"><div class="section-heading"><div class="eyebrow">{esc(c["work_eyebrow"])}</div><h2>{esc(c["work_h2"])}</h2><p>{esc(c["work_p"])}</p></div>{work_list(c["work"])}</div></section>
+    <section class="section tinted"><div class="container content-grid"><div><div class="eyebrow">{esc(c["about_bb_eye"])}</div><h2>{esc(c["about_bb_h2"])}</h2></div><div><p class="large-copy">{esc(c["about_bb_large"])}</p><p>{esc(c["about_bb_p"])}</p><p><a class="text-link" href="https://www.brightbridgegroup.com" target="_blank" rel="noopener noreferrer">{esc(c["about_bb_link"])}<span class="visually-hidden">{esc(u["new_tab"])}</span></a></p></div></div></section>
+    <section class="section"><div class="container"><div class="section-heading"><div class="eyebrow">{esc(c["work_eyebrow"])}</div><h2>{esc(c["work_h2"])}</h2><p>{esc(c["work_p"])}</p></div>{work_list(c["work"])}</div></section>
     <section class="section"><div class="container">{callout(lang, c["about_cta_eye"], c["about_cta"], products, c["cta_products"])}</div></section>'''
     write(lang, "about.html", shell(lang, "about.html", c["about_title"], c["about_desc"], body))
 
