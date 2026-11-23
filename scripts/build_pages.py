@@ -80,6 +80,19 @@ OB1600 = [
     ("assets/product-images/ob-1600.jpg", 1200, 900, "main"),
 ]
 
+# Homepage and listing card thumbnails only. Same crop as files[0], with the
+# background recolored to the card field (#f3f7f9) so object-fit:contain
+# letterboxing does not show a mismatched band. Product detail galleries
+# keep the original studio photos. OB-1600 stays on its existing cutout.
+KH2406_CARD = "assets/products/kh-2406/kh-2406-1-card.jpg"
+KH2307_CARD = "assets/product-images/kh-2307-1-card.jpg"
+OB1600_CARD = "assets/product-images/ob-1600-card.jpg"
+
+
+def card_files(files, card_path: str):
+    path, w, h, _key = files[0]
+    return [(card_path, w, h, "card")] + list(files[1:])
+
 
 def alts(lang: str):
     c = PAGES[lang]
@@ -389,8 +402,9 @@ def build_home(lang: str) -> None:
     # desktop and mobile frames keep the full product in view (no crop).
     img2406_hero = asset(lang, "assets/products/kh-2406/kh-2406-4-hero-desktop.jpg", nested)
     img2406_hero_m = asset(lang, "assets/products/kh-2406/kh-2406-4-hero-mobile.jpg", nested)
-    img2307 = asset(lang, KH2307[0][0], nested)
-    img1600 = asset(lang, OB1600[0][0], nested)
+    img2406_card = asset(lang, KH2406_CARD, nested)
+    img2307_card = asset(lang, KH2307_CARD, nested)
+    img1600_card = asset(lang, OB1600_CARD, nested)
     body = f'''    <section class="hero">
       <div class="hero-media">
         <picture>
@@ -410,9 +424,9 @@ def build_home(lang: str) -> None:
     <div class="preview-strip"><div class="container"><strong>{esc(c["strip_kicker"])}</strong><i aria-hidden="true"></i><span>{esc(c["strip_home"])}</span></div></div>
     <section class="section" aria-labelledby="portfolio-title"><div class="container"><div class="section-heading"><div class="eyebrow">{esc(c["range_eyebrow"])}</div><h2 id="portfolio-title">{esc(c["range_h2"])}</h2><p>{esc(c["range_p"])}</p><a class="text-link" href="{products}">{esc(c["browse_range"])} <span aria-hidden="true">→</span></a></div>
         <div class="highlight-grid">
-          <a class="highlight" href="{p2406}"><img src="{img2406}" srcset="{img2406} 1141w" sizes="(min-width: 1000px) 30vw, (min-width: 640px) 45vw, 92vw" alt="{esc(a["kh2406"][0])}" width="1141" height="1600"><span>KH-2406</span><strong>{esc(u["name_kh2406"])}</strong></a>
-          <a class="highlight" href="{p2307}"><img src="{img2307}" srcset="{img2307} 800w" sizes="(min-width: 1000px) 30vw, (min-width: 640px) 45vw, 92vw" alt="{esc(a["kh2307"][0])}" width="800" height="800"><span>KH-2307</span><strong>{esc(u["name_kh2307"])}</strong></a>
-          <a class="highlight" href="{p1600}"><img src="{img1600}" srcset="{img1600} 1200w" sizes="(min-width: 1000px) 30vw, (min-width: 640px) 45vw, 92vw" alt="{esc(a["ob1600"][0])}" width="1200" height="900"><span>OB-1600</span><strong>{esc(u["name_ob1600"])}</strong></a>
+          <a class="highlight" href="{p2406}"><img src="{img2406_card}" srcset="{img2406_card} 1141w" sizes="(min-width: 1000px) 30vw, (min-width: 640px) 45vw, 92vw" alt="{esc(a["kh2406"][0])}" width="1141" height="1600"><span>KH-2406</span><strong>{esc(u["name_kh2406"])}</strong></a>
+          <a class="highlight" href="{p2307}"><img src="{img2307_card}" srcset="{img2307_card} 800w" sizes="(min-width: 1000px) 30vw, (min-width: 640px) 45vw, 92vw" alt="{esc(a["kh2307"][0])}" width="800" height="800"><span>KH-2307</span><strong>{esc(u["name_kh2307"])}</strong></a>
+          <a class="highlight" href="{p1600}"><img src="{img1600_card}" srcset="{img1600_card} 1200w" sizes="(min-width: 1000px) 30vw, (min-width: 640px) 45vw, 92vw" alt="{esc(a["ob1600"][0])}" width="1200" height="900"><span>OB-1600</span><strong>{esc(u["name_ob1600"])}</strong></a>
         </div>
         {callout(lang, c["callout_eyebrow"], c["callout_h2"], contact + "#request-a-quote", c["cta_quote"])}
     </div></section>
@@ -524,8 +538,8 @@ def build_products(lang: str) -> None:
       <div class="container">
         <div class="product-section__heading"><div><div class="eyebrow">{esc(c["sec_beauty_eye"])}</div><h2 id="beauty-title">{esc(c["sec_beauty_h2"])}</h2><p>{esc(c["sec_beauty_p"])}</p></div><span class="product-section__count">{esc(c["sec_beauty_count"])}</span></div>
         <div class="product-grid">
-{product_card(lang, "KH-2406", "name_kh2406", c["vendor_scalp"], c["card_kh2406_p"], [c["card_kh2406_s1"], c["card_kh2406_s2"], c["card_kh2406_s3"]], KH2406, a["kh2406"], "KH-2406", "scalp")}
-{product_card(lang, "KH-2307", "name_kh2307", c["vendor_scalp"], c["card_kh2307_p"], [c["card_kh2307_s1"], c["card_kh2307_s2"], c["card_kh2307_s3"], c["card_kh2307_s4"]], KH2307, a["kh2307"], "KH-2307", "scalp")}
+{product_card(lang, "KH-2406", "name_kh2406", c["vendor_scalp"], c["card_kh2406_p"], [c["card_kh2406_s1"], c["card_kh2406_s2"], c["card_kh2406_s3"]], card_files(KH2406, KH2406_CARD), a["kh2406"], "KH-2406", "scalp")}
+{product_card(lang, "KH-2307", "name_kh2307", c["vendor_scalp"], c["card_kh2307_p"], [c["card_kh2307_s1"], c["card_kh2307_s2"], c["card_kh2307_s3"], c["card_kh2307_s4"]], card_files(KH2307, KH2307_CARD), a["kh2307"], "KH-2307", "scalp")}
         </div>
       </div>
     </section>
@@ -533,7 +547,7 @@ def build_products(lang: str) -> None:
       <div class="container">
         <div class="product-section__heading"><div><div class="eyebrow">{esc(c["sec_matt_eye"])}</div><h2 id="mattress-title">{esc(c["sec_matt_h2"])}</h2><p>{esc(c["sec_matt_p"])}</p></div><span class="product-section__count">{esc(c["sec_matt_count"])}</span></div>
         <div class="product-grid">
-{product_card(lang, "OB-1600", "name_ob1600", c["vendor_care"], c["card_ob1600_p"], [], OB1600, a["ob1600"], "OB-1600", "care")}
+{product_card(lang, "OB-1600", "name_ob1600", c["vendor_care"], c["card_ob1600_p"], [], card_files(OB1600, OB1600_CARD), a["ob1600"], "OB-1600", "care")}
         </div>
       </div>
     </section>
