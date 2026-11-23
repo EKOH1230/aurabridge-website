@@ -385,27 +385,25 @@ def build_home(lang: str) -> None:
     partnerships = here(lang, "partnerships.html", nested)
     contact = here(lang, "contact.html", nested)
     img2406 = asset(lang, KH2406[0][0], nested)
+    # Graded still-life of kh-2406-4.jpg for the homepage hero only. Separate
+    # desktop and mobile frames keep the full product in view (no crop).
+    img2406_hero = asset(lang, "assets/products/kh-2406/kh-2406-4-hero-desktop.jpg", nested)
+    img2406_hero_m = asset(lang, "assets/products/kh-2406/kh-2406-4-hero-mobile.jpg", nested)
     img2307 = asset(lang, KH2307[0][0], nested)
     img1600 = asset(lang, OB1600[0][0], nested)
-    img2307b = asset(lang, "assets/product-images/kh-2307-4.jpg", nested)
     body = f'''    <section class="hero">
+      <div class="hero-media">
+        <picture>
+          <source media="(max-width: 900px)" srcset="{img2406_hero_m} 780w" sizes="100vw" width="780" height="700">
+          <img src="{img2406_hero}" srcset="{img2406_hero} 2880w" sizes="100vw" alt="{esc(c["alt_kh2406_hero"])}" width="2880" height="1620">
+        </picture>
+      </div>
       <div class="container hero-inner">
         <div class="hero-copy">
           <div class="eyebrow">{esc(c["home_eyebrow"])}</div>
           <h1>{esc(c["home_h1"])}</h1>
           <p class="hero-lead">{esc(c["home_lead"])}</p>
-          <div class="hero-actions"><a class="button primary" href="{products}">{esc(c["cta_products"])} <span aria-hidden="true">↗</span></a><a class="button outline" href="{contact}#request-a-quote">{esc(c["cta_quote"])} <span aria-hidden="true">↗</span></a></div>
-          <div class="hero-note"><span aria-hidden="true"></span>{esc(c["hero_note_asia"])} <span aria-hidden="true"></span> {esc(c["hero_note_eu"])}</div>
-        </div>
-        <div class="hero-products" role="group" aria-label="{esc(c["hero_group"])}">
-          <a class="hero-product" href="{p2406}">
-            <img src="{img2406}" srcset="{img2406} 1141w" sizes="(min-width: 900px) 26vw, 45vw" alt="{esc(a["kh2406"][0])}" width="1141" height="1600">
-            <span class="hero-product__meta"><span>KH-2406</span><strong>{esc(u["name_kh2406"])}</strong></span>
-          </a>
-          <a class="hero-product" href="{p2307}">
-            <img src="{img2307b}" srcset="{img2307b} 800w" sizes="(min-width: 900px) 26vw, 45vw" alt="{esc(a["kh2307"][3])}" width="800" height="800">
-            <span class="hero-product__meta"><span>KH-2307</span><strong>{esc(u["name_kh2307"])}</strong></span>
-          </a>
+          <div class="hero-actions"><a class="button light" href="{contact}#request-a-quote">{esc(c["cta_quote"])}</a></div>
         </div>
       </div>
     </section>
@@ -430,7 +428,7 @@ def build_home(lang: str) -> None:
       </div>
     </section>
     <section class="section" aria-labelledby="connection-title"><div class="container split-panel"><div class="panel-photo"><img src="{img2406}" srcset="{img2406} 1141w" sizes="(min-width: 900px) 36vw, 92vw" alt="{esc(a["kh2406"][0])}" width="1141" height="1600"></div><div class="panel-copy"><div class="eyebrow">{esc(c["connect_eyebrow"])}</div><h2 id="connection-title">{esc(c["connect_h2"])}</h2><p>{esc(c["connect_p"])}</p><a class="text-link" href="{partnerships}">{esc(c["connect_link"])} <span aria-hidden="true">→</span></a></div></div></section>'''
-    write(lang, "index.html", shell(lang, "index.html", c["home_title"], c["home_desc"], body))
+    write(lang, "index.html", shell(lang, "index.html", c["home_title"], c["home_desc"], body, body_attr=' class="home"'))
 
 
 def build_about(lang: str) -> None:
