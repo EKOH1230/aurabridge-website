@@ -15,6 +15,58 @@ HTML_LANG = {"en": "en", "zh": "zh-Hans", "fr": "fr", "de": "de", "es": "es"}
 LANG_DIR = {"en": "", "zh": "zh", "fr": "fr", "de": "de", "es": "es"}
 LANG_LABEL = {"en": "EN", "zh": "中文", "fr": "FR", "de": "DE", "es": "ES"}
 
+# Small inline SVG flags for the language switcher (not emoji). EN uses the
+# GB flag, ZH the CN flag, as specified. Decorative; labels stay on the codes.
+_FLAG_SVG = {
+    "en": (
+        '<svg class="lang-flag__svg" viewBox="0 0 24 16" focusable="false" aria-hidden="true">'
+        '<rect width="24" height="16" fill="#012169"/>'
+        '<path d="M0 0l24 16M24 0L0 16" stroke="#fff" stroke-width="3.2"/>'
+        '<path d="M0 0l24 16M24 0L0 16" stroke="#C8102E" stroke-width="1.6"/>'
+        '<path d="M12 0v16M0 8h24" stroke="#fff" stroke-width="5.2"/>'
+        '<path d="M12 0v16M0 8h24" stroke="#C8102E" stroke-width="3.2"/>'
+        '</svg>'
+    ),
+    "fr": (
+        '<svg class="lang-flag__svg" viewBox="0 0 24 16" focusable="false" aria-hidden="true">'
+        '<rect width="8" height="16" fill="#002654"/>'
+        '<rect x="8" width="8" height="16" fill="#fff"/>'
+        '<rect x="16" width="8" height="16" fill="#ED2939"/>'
+        '</svg>'
+    ),
+    "de": (
+        '<svg class="lang-flag__svg" viewBox="0 0 24 16" focusable="false" aria-hidden="true">'
+        '<rect width="24" height="5.34" fill="#000"/>'
+        '<rect y="5.33" width="24" height="5.34" fill="#DD0000"/>'
+        '<rect y="10.66" width="24" height="5.34" fill="#FFCE00"/>'
+        '</svg>'
+    ),
+    "es": (
+        '<svg class="lang-flag__svg" viewBox="0 0 24 16" focusable="false" aria-hidden="true">'
+        '<rect width="24" height="16" fill="#AA151B"/>'
+        '<rect y="4" width="24" height="8" fill="#F1BF00"/>'
+        '</svg>'
+    ),
+    "zh": (
+        '<svg class="lang-flag__svg" viewBox="0 0 24 16" focusable="false" aria-hidden="true">'
+        '<rect width="24" height="16" fill="#DE2910"/>'
+        '<polygon fill="#FFDE00" points="4.00,1.60 4.54,3.26 6.28,3.26 4.87,4.28 5.41,5.94 4.00,4.92 2.59,5.94 3.13,4.28 1.72,3.26 3.46,3.26"/>'
+        '<polygon fill="#FFDE00" points="7.31,2.01 7.70,1.57 7.40,1.07 7.93,1.30 8.31,0.86 8.26,1.44 8.80,1.67 8.23,1.80 8.18,2.38 7.88,1.88"/>'
+        '<polygon fill="#FFDE00" points="8.81,3.31 9.33,3.06 9.25,2.48 9.65,2.90 10.17,2.64 9.90,3.16 10.31,3.57 9.73,3.47 9.46,3.99 9.38,3.41"/>'
+        '<polygon fill="#FFDE00" points="8.83,5.38 9.41,5.36 9.57,4.80 9.77,5.35 10.35,5.33 9.89,5.68 10.09,6.23 9.61,5.91 9.15,6.26 9.31,5.70"/>'
+        '<polygon fill="#FFDE00" points="7.38,6.70 7.92,6.91 8.28,6.45 8.26,7.03 8.80,7.24 8.24,7.39 8.21,7.97 7.89,7.49 7.33,7.64 7.69,7.19"/>'
+        '</svg>'
+    ),
+}
+
+
+def lang_flag_label(code: str) -> str:
+    return (
+        f'<span class="lang-flag" aria-hidden="true">{_FLAG_SVG[code]}</span>'
+        f'<span class="lang-switch__code">{html_lib.escape(LANG_LABEL[code])}</span>'
+    )
+
+
 # Product list is unchanged (Ek has not approved the new 10-model range yet).
 PRODUCTS = [
     ("KH-2406", "Precision scalp serum applicator"),
@@ -79,6 +131,19 @@ KH2307 = [
 OB1600 = [
     ("assets/product-images/ob-1600.jpg", 1200, 900, "main"),
 ]
+
+# Homepage and listing card thumbnails only. Same crop as files[0], with the
+# background recolored to the card field (#f3f7f9) so object-fit:contain
+# letterboxing does not show a mismatched band. Product detail galleries
+# keep the original studio photos. OB-1600 stays on its existing cutout.
+KH2406_CARD = "assets/products/kh-2406/kh-2406-1-card.jpg"
+KH2307_CARD = "assets/product-images/kh-2307-1-card.jpg"
+OB1600_CARD = "assets/product-images/ob-1600-card.jpg"
+
+
+def card_files(files, card_path: str):
+    path, w, h, _key = files[0]
+    return [(card_path, w, h, "card")] + list(files[1:])
 
 
 def alts(lang: str):
@@ -223,7 +288,7 @@ def header(lang: str, filename: str, nested: bool = False) -> str:
         href = rel(cur, root_path(other, filename))
         current = " aria-current=\"true\"" if other == lang else ""
         lang_items.append(
-            f'<li><a href="{href}" hreflang="{HREFLANG[other]}" lang="{HTML_LANG[other]}"{current}>{LANG_LABEL[other]}</a></li>'
+            f'<li><a href="{href}" hreflang="{HREFLANG[other]}" lang="{HTML_LANG[other]}"{current}>{lang_flag_label(other)}</a></li>'
         )
     return f'''  <a class="skip-link" href="#main">{esc(u["skip"])}</a>
   <header class="site-header">
@@ -232,7 +297,7 @@ def header(lang: str, filename: str, nested: bool = False) -> str:
       <div class="header-end">
         <nav class="site-nav" id="site-nav" aria-label="{esc(u["nav_aria"])}" data-site-nav>{links}</nav>
         <div class="lang-switch" data-lang-switch>
-          <button class="lang-switch__button" type="button" aria-expanded="false" aria-controls="lang-menu" aria-label="{esc(u["lang_aria"])}">{LANG_LABEL[lang]}</button>
+          <button class="lang-switch__button" type="button" aria-expanded="false" aria-controls="lang-menu" aria-label="{esc(u["lang_aria"])}: {esc(LANG_LABEL[lang])}">{lang_flag_label(lang)}</button>
           <ul class="lang-switch__menu" id="lang-menu" hidden>{''.join(lang_items)}</ul>
         </div>
         <button class="menu-button" type="button" aria-label="{esc(u["menu_open"])}" aria-expanded="false" aria-controls="site-nav" data-menu-button><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3 7h18M3 12h18M3 17h18"/></svg></button>
@@ -389,8 +454,9 @@ def build_home(lang: str) -> None:
     # desktop and mobile frames keep the full product in view (no crop).
     img2406_hero = asset(lang, "assets/products/kh-2406/kh-2406-4-hero-desktop.jpg", nested)
     img2406_hero_m = asset(lang, "assets/products/kh-2406/kh-2406-4-hero-mobile.jpg", nested)
-    img2307 = asset(lang, KH2307[0][0], nested)
-    img1600 = asset(lang, OB1600[0][0], nested)
+    img2406_card = asset(lang, KH2406_CARD, nested)
+    img2307_card = asset(lang, KH2307_CARD, nested)
+    img1600_card = asset(lang, OB1600_CARD, nested)
     body = f'''    <section class="hero">
       <div class="hero-media">
         <picture>
@@ -408,15 +474,15 @@ def build_home(lang: str) -> None:
       </div>
     </section>
     <div class="preview-strip"><div class="container"><strong>{esc(c["strip_kicker"])}</strong><i aria-hidden="true"></i><span>{esc(c["strip_home"])}</span></div></div>
-    <section class="section" aria-labelledby="portfolio-title"><div class="container"><div class="section-heading"><div class="eyebrow">{esc(c["range_eyebrow"])}</div><h2 id="portfolio-title">{esc(c["range_h2"])}</h2><p>{esc(c["range_p"])}</p><a class="text-link" href="{products}">{esc(c["browse_range"])} <span aria-hidden="true">→</span></a></div>
+    <section class="section section-band-sky" aria-labelledby="portfolio-title"><div class="container"><div class="section-heading"><div class="eyebrow">{esc(c["range_eyebrow"])}</div><h2 id="portfolio-title">{esc(c["range_h2"])}</h2><p>{esc(c["range_p"])}</p><a class="text-link" href="{products}">{esc(c["browse_range"])} <span aria-hidden="true">→</span></a></div>
         <div class="highlight-grid">
-          <a class="highlight" href="{p2406}"><img src="{img2406}" srcset="{img2406} 1141w" sizes="(min-width: 1000px) 30vw, (min-width: 640px) 45vw, 92vw" alt="{esc(a["kh2406"][0])}" width="1141" height="1600"><span>KH-2406</span><strong>{esc(u["name_kh2406"])}</strong></a>
-          <a class="highlight" href="{p2307}"><img src="{img2307}" srcset="{img2307} 800w" sizes="(min-width: 1000px) 30vw, (min-width: 640px) 45vw, 92vw" alt="{esc(a["kh2307"][0])}" width="800" height="800"><span>KH-2307</span><strong>{esc(u["name_kh2307"])}</strong></a>
-          <a class="highlight" href="{p1600}"><img src="{img1600}" srcset="{img1600} 1200w" sizes="(min-width: 1000px) 30vw, (min-width: 640px) 45vw, 92vw" alt="{esc(a["ob1600"][0])}" width="1200" height="900"><span>OB-1600</span><strong>{esc(u["name_ob1600"])}</strong></a>
+          <a class="highlight" href="{p2406}"><img src="{img2406_card}" srcset="{img2406_card} 1141w" sizes="(min-width: 1000px) 30vw, (min-width: 640px) 45vw, 92vw" alt="{esc(a["kh2406"][0])}" width="1141" height="1600"><span>KH-2406</span><strong>{esc(u["name_kh2406"])}</strong></a>
+          <a class="highlight" href="{p2307}"><img src="{img2307_card}" srcset="{img2307_card} 800w" sizes="(min-width: 1000px) 30vw, (min-width: 640px) 45vw, 92vw" alt="{esc(a["kh2307"][0])}" width="800" height="800"><span>KH-2307</span><strong>{esc(u["name_kh2307"])}</strong></a>
+          <a class="highlight" href="{p1600}"><img src="{img1600_card}" srcset="{img1600_card} 1200w" sizes="(min-width: 1000px) 30vw, (min-width: 640px) 45vw, 92vw" alt="{esc(a["ob1600"][0])}" width="1200" height="900"><span>OB-1600</span><strong>{esc(u["name_ob1600"])}</strong></a>
         </div>
         {callout(lang, c["callout_eyebrow"], c["callout_h2"], contact + "#request-a-quote", c["cta_quote"])}
     </div></section>
-    <section class="section" aria-labelledby="intro-title">
+    <section class="section section-band-soft" aria-labelledby="intro-title">
       <div class="container intro-grid">
         <div><div class="eyebrow">{esc(c["why_eyebrow"])}</div><h2 id="intro-title">{esc(c["why_h2"])}</h2></div>
         <div class="small-copy"><p class="large-copy">{esc(c["why_large"])}</p><p>{esc(c["why_p"])}</p><a class="text-link" href="{about}">{esc(c["more_about"])} <span aria-hidden="true">→</span></a></div>
@@ -427,7 +493,7 @@ def build_home(lang: str) -> None:
         {work_list(c["work"])}
       </div>
     </section>
-    <section class="section" aria-labelledby="connection-title"><div class="container split-panel"><div class="panel-photo"><img src="{img2406}" srcset="{img2406} 1141w" sizes="(min-width: 900px) 36vw, 92vw" alt="{esc(a["kh2406"][0])}" width="1141" height="1600"></div><div class="panel-copy"><div class="eyebrow">{esc(c["connect_eyebrow"])}</div><h2 id="connection-title">{esc(c["connect_h2"])}</h2><p>{esc(c["connect_p"])}</p><a class="text-link" href="{partnerships}">{esc(c["connect_link"])} <span aria-hidden="true">→</span></a></div></div></section>'''
+    <section class="section section-band-sky" aria-labelledby="connection-title"><div class="container split-panel"><div class="panel-photo"><img src="{img2406}" srcset="{img2406} 1141w" sizes="(min-width: 900px) 36vw, 92vw" alt="{esc(a["kh2406"][0])}" width="1141" height="1600"></div><div class="panel-copy"><div class="eyebrow">{esc(c["connect_eyebrow"])}</div><h2 id="connection-title">{esc(c["connect_h2"])}</h2><p>{esc(c["connect_p"])}</p><a class="text-link" href="{partnerships}">{esc(c["connect_link"])} <span aria-hidden="true">→</span></a></div></div></section>'''
     write(lang, "index.html", shell(lang, "index.html", c["home_title"], c["home_desc"], body, body_attr=' class="home"'))
 
 
@@ -436,8 +502,8 @@ def build_about(lang: str) -> None:
     products = here(lang, "products.html", False)
     body = f'''    <section class="page-hero"><div class="container">{breadcrumb(lang, False, (None, u["about"]))}<h1>{esc(c["about_h1"])}</h1><p>{esc(c["about_lead"])}</p></div></section>
     <div class="preview-strip"><div class="container"><strong>AuraBridge</strong><i aria-hidden="true"></i><span>{esc(c["about_strip"])}</span></div></div>
-    <section class="section"><div class="container content-grid"><div><div class="eyebrow">{esc(c["about_eye"])}</div><h2>{esc(c["about_h2"])}</h2></div><div><p class="large-copy">{esc(c["about_large"])}</p><p>{esc(c["about_p1"])}</p><p>{esc(c["about_p2"])}</p></div></div></section>
-    <section class="section tinted"><div class="container content-grid"><div><div class="eyebrow">{esc(c["about_bb_eye"])}</div><h2>{esc(c["about_bb_h2"])}</h2></div><div><p class="large-copy">{esc(c["about_bb_large"])}</p><p>{esc(c["about_bb_p"])}</p><p><a class="text-link" href="https://www.brightbridgegroup.com" target="_blank" rel="noopener noreferrer">{esc(c["about_bb_link"])}<span class="visually-hidden">{esc(u["new_tab"])}</span></a></p></div></div></section>
+    <section class="section section-band-sky"><div class="container content-grid"><div><div class="eyebrow">{esc(c["about_eye"])}</div><h2>{esc(c["about_h2"])}</h2></div><div><p class="large-copy">{esc(c["about_large"])}</p><p>{esc(c["about_p1"])}</p><p>{esc(c["about_p2"])}</p></div></div></section>
+    <section class="section section-band-navy"><div class="container content-grid"><div><div class="eyebrow">{esc(c["about_bb_eye"])}</div><h2>{esc(c["about_bb_h2"])}</h2></div><div><p class="large-copy">{esc(c["about_bb_large"])}</p><p>{esc(c["about_bb_p"])}</p><p><a class="text-link" href="https://www.brightbridgegroup.com" target="_blank" rel="noopener noreferrer">{esc(c["about_bb_link"])}<span class="visually-hidden">{esc(u["new_tab"])}</span></a></p></div></div></section>
     <section class="section"><div class="container"><div class="section-heading"><div class="eyebrow">{esc(c["work_eyebrow"])}</div><h2>{esc(c["work_h2"])}</h2><p>{esc(c["work_p"])}</p></div>{work_list(c["work"])}</div></section>
     <section class="section"><div class="container">{callout(lang, c["about_cta_eye"], c["about_cta"], products, c["cta_products"])}</div></section>'''
     write(lang, "about.html", shell(lang, "about.html", c["about_title"], c["about_desc"], body))
@@ -448,7 +514,7 @@ def build_partnerships(lang: str) -> None:
     contact = here(lang, "contact.html", False)
     body = f'''    <section class="page-hero"><div class="container">{breadcrumb(lang, False, (None, u["partnerships"]))}<h1>{esc(c["part_h1"])}</h1><p>{esc(c["part_lead"])}</p></div></section>
     <div class="preview-strip"><div class="container"><strong>{esc(u["partnerships"])}</strong><i aria-hidden="true"></i><span>{esc(c["part_strip"])}</span></div></div>
-    <section class="section"><div class="container content-grid"><div><div class="eyebrow">{esc(c["part_eye"])}</div><h2>{esc(c["part_h2"])}</h2></div><div><p>{esc(c["part_p"])}</p><div class="note-box">{esc(c["part_note"])}</div></div></div></section>
+    <section class="section section-band-sky"><div class="container content-grid"><div><div class="eyebrow">{esc(c["part_eye"])}</div><h2>{esc(c["part_h2"])}</h2></div><div><p>{esc(c["part_p"])}</p><div class="note-box">{esc(c["part_note"])}</div></div></div></section>
     <section class="section tinted"><div class="container"><div class="section-heading"><div class="eyebrow">{esc(c["part_how_eye"])}</div><h2>{esc(c["part_how_h2"])}</h2><p>{esc(c["part_how_p"])}</p></div>{work_list(c["part_steps"])}</div></section>
     <section class="section"><div class="container">{callout(lang, c["part_cta_eye"], c["part_cta"], contact, c["contact_page"])}</div></section>'''
     write(lang, "partnerships.html", shell(lang, "partnerships.html", c["part_title"], c["part_desc"], body))
@@ -524,8 +590,8 @@ def build_products(lang: str) -> None:
       <div class="container">
         <div class="product-section__heading"><div><div class="eyebrow">{esc(c["sec_beauty_eye"])}</div><h2 id="beauty-title">{esc(c["sec_beauty_h2"])}</h2><p>{esc(c["sec_beauty_p"])}</p></div><span class="product-section__count">{esc(c["sec_beauty_count"])}</span></div>
         <div class="product-grid">
-{product_card(lang, "KH-2406", "name_kh2406", c["vendor_scalp"], c["card_kh2406_p"], [c["card_kh2406_s1"], c["card_kh2406_s2"], c["card_kh2406_s3"]], KH2406, a["kh2406"], "KH-2406", "scalp")}
-{product_card(lang, "KH-2307", "name_kh2307", c["vendor_scalp"], c["card_kh2307_p"], [c["card_kh2307_s1"], c["card_kh2307_s2"], c["card_kh2307_s3"], c["card_kh2307_s4"]], KH2307, a["kh2307"], "KH-2307", "scalp")}
+{product_card(lang, "KH-2406", "name_kh2406", c["vendor_scalp"], c["card_kh2406_p"], [c["card_kh2406_s1"], c["card_kh2406_s2"], c["card_kh2406_s3"]], card_files(KH2406, KH2406_CARD), a["kh2406"], "KH-2406", "scalp")}
+{product_card(lang, "KH-2307", "name_kh2307", c["vendor_scalp"], c["card_kh2307_p"], [c["card_kh2307_s1"], c["card_kh2307_s2"], c["card_kh2307_s3"], c["card_kh2307_s4"]], card_files(KH2307, KH2307_CARD), a["kh2307"], "KH-2307", "scalp")}
         </div>
       </div>
     </section>
@@ -533,7 +599,7 @@ def build_products(lang: str) -> None:
       <div class="container">
         <div class="product-section__heading"><div><div class="eyebrow">{esc(c["sec_matt_eye"])}</div><h2 id="mattress-title">{esc(c["sec_matt_h2"])}</h2><p>{esc(c["sec_matt_p"])}</p></div><span class="product-section__count">{esc(c["sec_matt_count"])}</span></div>
         <div class="product-grid">
-{product_card(lang, "OB-1600", "name_ob1600", c["vendor_care"], c["card_ob1600_p"], [], OB1600, a["ob1600"], "OB-1600", "care")}
+{product_card(lang, "OB-1600", "name_ob1600", c["vendor_care"], c["card_ob1600_p"], [], card_files(OB1600, OB1600_CARD), a["ob1600"], "OB-1600", "care")}
         </div>
       </div>
     </section>
