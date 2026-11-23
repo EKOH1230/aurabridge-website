@@ -118,9 +118,9 @@ KH2406 = [
     ("assets/products/kh-2406/kh-2406-1.jpg", 1141, 1600, "front"),
     ("assets/products/kh-2406/kh-2406-2.jpg", 1141, 1600, "apart"),
     ("assets/products/kh-2406/kh-2406-3.jpg", 1141, 1600, "heads"),
-    ("assets/products/kh-2406/kh-2406-4.jpg", 1141, 1600, "studio"),
-    ("assets/products/kh-2406/kh-2406-5.jpg", 1141, 1600, "side"),
-    ("assets/products/kh-2406/kh-2406-6.jpg", 1141, 1600, "use"),
+    ("assets/products/kh-2406/kh-2406-4.jpg", 1600, 1436, "studio"),
+    ("assets/products/kh-2406/kh-2406-5.jpg", 1425, 1600, "side"),
+    ("assets/products/kh-2406/kh-2406-6.jpg", 900, 1600, "use"),
 ]
 KH2307 = [
     ("assets/product-images/kh-2307-1.jpg", 800, 800, "main"),
@@ -528,7 +528,7 @@ def thumbs(lang: str, files, alt_list, nested: bool, model: str, sizes: str) -> 
         pressed = "true" if i == 1 else "false"
         label = c["show_photo"].format(n=i, total=len(files))
         buttons.append(
-            f'<button type="button" aria-pressed="{pressed}" aria-label="{esc(label)}" data-gallery-thumb data-src="{src}" data-srcset="{src} {w}w" data-alt="{esc(alt)}"><img src="{src}" srcset="{src} {w}w" sizes="{sizes}" alt="" width="{w}" height="{h}"></button>'
+            f'<button type="button" aria-pressed="{pressed}" aria-label="{esc(label)}" data-gallery-thumb data-src="{src}" data-srcset="{src} {w}w" data-width="{w}" data-height="{h}" data-alt="{esc(alt)}"><img src="{src}" srcset="{src} {w}w" sizes="{sizes}" alt="" width="{w}" height="{h}"></button>'
         )
     return "".join(buttons)
 

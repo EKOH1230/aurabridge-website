@@ -142,6 +142,8 @@ document.querySelectorAll('[data-gallery]').forEach((gallery) => {
     main.alt = button.dataset.alt || '';
     if (button.dataset.srcset) main.srcset = button.dataset.srcset;
     else main.removeAttribute('srcset');
+    if (button.dataset.width) main.setAttribute('width', button.dataset.width);
+    if (button.dataset.height) main.setAttribute('height', button.dataset.height);
     thumbs.forEach((item) => item.setAttribute('aria-pressed', 'false'));
     button.setAttribute('aria-pressed', 'true');
   };
