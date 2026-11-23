@@ -385,13 +385,18 @@ def build_home(lang: str) -> None:
     partnerships = here(lang, "partnerships.html", nested)
     contact = here(lang, "contact.html", nested)
     img2406 = asset(lang, KH2406[0][0], nested)
-    # Graded, cropped derivative of kh-2406-6.jpg for the homepage hero only.
-    img2406_use = asset(lang, "assets/products/kh-2406/kh-2406-6-hero.jpg", nested)
+    # Graded still-life of kh-2406-4.jpg for the homepage hero only. Separate
+    # desktop and mobile frames keep the full product in view (no crop).
+    img2406_hero = asset(lang, "assets/products/kh-2406/kh-2406-4-hero-desktop.jpg", nested)
+    img2406_hero_m = asset(lang, "assets/products/kh-2406/kh-2406-4-hero-mobile.jpg", nested)
     img2307 = asset(lang, KH2307[0][0], nested)
     img1600 = asset(lang, OB1600[0][0], nested)
     body = f'''    <section class="hero">
       <div class="hero-media">
-        <img src="{img2406_use}" srcset="{img2406_use} 2880w" sizes="100vw" alt="{esc(a["kh2406"][5])}" width="2880" height="1620">
+        <picture>
+          <source media="(max-width: 900px)" srcset="{img2406_hero_m} 780w" sizes="100vw" width="780" height="700">
+          <img src="{img2406_hero}" srcset="{img2406_hero} 2880w" sizes="100vw" alt="{esc(c["alt_kh2406_hero"])}" width="2880" height="1620">
+        </picture>
       </div>
       <div class="container hero-inner">
         <div class="hero-copy">

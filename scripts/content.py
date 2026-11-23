@@ -321,7 +321,7 @@ PAGES = {
     "connect_h2": "Start with a quote request.",
     "connect_p": "We work with brands, importers, distributors and professional channels. Tell us the models and your market, and we will reply by email.",
     "connect_link": "How partnership works",
-    "alt_kh2406_hero": "KH-2406 precision scalp serum applicator, front view",
+    "alt_kh2406_hero": "KH-2406 scalp serum applicator, studio still-life with the cap beside it",
     "alt_kh2307_hero": "KH-2307 scalp roller with serum reservoir",
     "alt_ob1600": "OB-1600 alternating-pressure air mattress",
 
@@ -510,7 +510,7 @@ PAGES = {
     "connect_h2": "从一次报价请求开始。",
     "connect_p": "我们与品牌、进口商、经销商和专业渠道合作。请告知型号和您的市场，我们会通过电子邮件回复。",
     "connect_link": "合作如何开始",
-    "alt_kh2406_hero": "KH-2406 精密头皮精华涂抹器，正面",
+    "alt_kh2406_hero": "KH-2406 头皮精华涂抹器，盖帽置于一侧的静物照片",
     "alt_kh2307_hero": "KH-2307 带精华储液的头皮滚轮",
     "alt_ob1600": "OB-1600 交替压力气垫",
 
@@ -699,7 +699,7 @@ PAGES = {
     "connect_h2": "Commencez par une demande de devis.",
     "connect_p": "Nous travaillons avec des marques, importateurs, distributeurs et canaux professionnels. Indiquez les modèles et votre marché, et nous répondrons par e-mail.",
     "connect_link": "Comment débute un partenariat",
-    "alt_kh2406_hero": "Applicateur de précision KH-2406 pour sérum capillaire, vue de face",
+    "alt_kh2406_hero": "Applicateur KH-2406 pour sérum capillaire, nature morte en studio avec le bouchon à côté",
     "alt_kh2307_hero": "Rouleau KH-2307 pour cuir chevelu avec réservoir de sérum",
     "alt_ob1600": "Matelas à air à pression alternée OB-1600",
 
@@ -888,7 +888,7 @@ PAGES = {
     "connect_h2": "Beginnen Sie mit einer Angebotsanfrage.",
     "connect_p": "Wir arbeiten mit Marken, Importeuren, Vertriebspartnern und Fachkanälen. Nennen Sie uns die Modelle und Ihren Markt, und wir antworten per E-Mail.",
     "connect_link": "So beginnt eine Partnerschaft",
-    "alt_kh2406_hero": "Präzisionsapplikator KH-2406 für Kopfhautserum, Vorderansicht",
+    "alt_kh2406_hero": "Applikator KH-2406 für Kopfhautserum, Studio-Stillleben mit der Kappe daneben",
     "alt_kh2307_hero": "Kopfhautroller KH-2307 mit Serumreservoir",
     "alt_ob1600": "Luftmatratze mit Wechseldruck OB-1600",
 
@@ -1077,7 +1077,7 @@ PAGES = {
     "connect_h2": "Empiece con una solicitud de presupuesto.",
     "connect_p": "Trabajamos con marcas, importadores, distribuidores y canales profesionales. Indíquenos los modelos y su mercado, y responderemos por correo electrónico.",
     "connect_link": "Cómo empieza una alianza",
-    "alt_kh2406_hero": "Aplicador de precisión KH-2406 para sérum del cuero cabelludo, vista frontal",
+    "alt_kh2406_hero": "Aplicador KH-2406 para sérum del cuero cabelludo, bodegón de estudio con el tapón al lado",
     "alt_kh2307_hero": "Rodillo KH-2307 para el cuero cabelludo con depósito de sérum",
     "alt_ob1600": "Colchón de aire de presión alterna OB-1600",
 
