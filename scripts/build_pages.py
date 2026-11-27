@@ -67,12 +67,6 @@ def lang_flag_label(code: str) -> str:
     )
 
 
-# Product list is unchanged (Ek has not approved the new 10-model range yet).
-PRODUCTS = [
-    ("KH-2406", "Precision scalp serum applicator"),
-    ("KH-2307", "Scalp roller with serum reservoir"),
-    ("OB-1600", "Alternating-pressure air mattress"),
-]
 
 
 def esc(s: str) -> str:
@@ -113,6 +107,7 @@ import sys
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from content import UI, PAGES
 from legal import legal_body, privacy_body
+from range_products import MODELS as RANGE_MODELS, DESC_SUFFIX, by_group
 
 KH2406 = [
     ("assets/products/kh-2406/kh-2406-1.jpg", 1141, 1600, "front"),
@@ -328,6 +323,7 @@ def quote_form(lang: str, nested: bool = False, selected: str | None = None) -> 
         ("", u["select_product"]),
         ("KH-2406", u["p_kh2406"]),
         ("KH-2307", u["p_kh2307"]),
+    ] + [(m["model"], f'{m["model"]} {m["copy"][lang]["name"]}') for m in RANGE_MODELS] + [
         ("OB-1600", u["p_ob1600"]),
         ("Other", u["other"]),
     ]
@@ -533,8 +529,9 @@ def thumbs(lang: str, files, alt_list, nested: bool, model: str, sizes: str) -> 
     return "".join(buttons)
 
 
-def product_card(lang: str, model: str, name_key: str, vendor: str, para: str, specs: list[str], files, alt_list, pid: str, css_class: str) -> str:
+def product_card(lang: str, model: str, name_key: str, vendor: str, para: str, specs: list[str], files, alt_list, pid: str, css_class: str, name: str | None = None) -> str:
     u, c = UI[lang], PAGES[lang]
+    name = name if name is not None else u[name_key]
     nested = False
     href = here(lang, f"products/{model.lower()}.html", nested)
     main = files[0]
@@ -542,7 +539,7 @@ def product_card(lang: str, model: str, name_key: str, vendor: str, para: str, s
     w, h = main[1], main[2]
     thumb_html = thumbs(lang, files, alt_list, nested, model, "48px")
     specs_html = "".join(f"<li>{esc(s)}</li>" for s in specs)
-    hidden = esc(f"{model} {u[name_key]}")
+    hidden = esc(f"{model} {name}")
     return f'''          <article class="product-card {css_class}" id="{model.lower()}" data-product-id="{model}">
             <a class="product-card__cover" href="{href}"><span class="visually-hidden">{hidden}</span></a>
             <div class="product-card__art" data-gallery>
@@ -554,7 +551,7 @@ def product_card(lang: str, model: str, name_key: str, vendor: str, para: str, s
             </div>
             <div class="product-card__body">
               <p class="product-card__vendor">{esc(vendor)}</p>
-              <h3>{esc(u[name_key])}</h3>
+              <h3>{esc(name)}</h3>
               <p class="product-card__model">{model}</p>
               <p>{esc(para)}</p>
               <ul class="product-card__specs">{specs_html}</ul>
@@ -563,10 +560,17 @@ def product_card(lang: str, model: str, name_key: str, vendor: str, para: str, s
           </article>'''
 
 
+def range_card(lang: str, m: dict, vendor: str, css_class: str) -> str:
+    cp = m["copy"][lang]
+    return product_card(lang, m["model"], "", vendor, cp["card_p"], cp["card_specs"], m["files"], [cp["alt"]] * len(m["files"]), m["model"], css_class, name=cp["name"])
+
+
 def build_products(lang: str) -> None:
     c, u = PAGES[lang], UI[lang]
     a = alts(lang)
     contact = here(lang, "contact.html", False)
+    scalp_cards = "\n".join(range_card(lang, m, c["vendor_scalp"], "scalp") for m in by_group("scalp"))
+    face_cards = "\n".join(range_card(lang, m, c["vendor_face"], "scalp") for m in by_group("face"))
     body = f'''    <section class="page-hero product-hero">
       <div class="container">
         {breadcrumb(lang, False, (None, u["products"]))}
@@ -575,7 +579,8 @@ def build_products(lang: str) -> None:
         <p>{esc(c["prod_lead"])}</p>
         <div class="product-hero__summary" aria-label="{esc(c["prod_groups"])}">
           <span><strong>01</strong> {esc(c["prod_n_beauty"])}</span>
-          <span><strong>02</strong> {esc(c["prod_n_mattress"])}</span>
+          <span><strong>02</strong> {esc(c["prod_n_face"])}</span>
+          <span><strong>03</strong> {esc(c["prod_n_mattress"])}</span>
         </div>
       </div>
     </section>
@@ -583,7 +588,7 @@ def build_products(lang: str) -> None:
     <section class="product-intro" aria-label="{esc(c["prod_groups"])}">
       <div class="container product-intro__inner">
         <p>{esc(c["prod_intro"])}</p>
-        <nav class="category-links" aria-label="{esc(c["prod_groups"])}"><a href="#beauty">{esc(c["cat_beauty"])} <span>01</span></a><a href="#mattresses">{esc(c["cat_mattress"])} <span>02</span></a></nav>
+        <nav class="category-links" aria-label="{esc(c["prod_groups"])}"><a href="#beauty">{esc(c["cat_beauty"])} <span>01</span></a><a href="#facial">{esc(c["cat_face"])} <span>02</span></a><a href="#mattresses">{esc(c["cat_mattress"])} <span>03</span></a></nav>
       </div>
     </section>
     <section class="product-section" id="beauty" aria-labelledby="beauty-title">
@@ -592,6 +597,15 @@ def build_products(lang: str) -> None:
         <div class="product-grid">
 {product_card(lang, "KH-2406", "name_kh2406", c["vendor_scalp"], c["card_kh2406_p"], [c["card_kh2406_s1"], c["card_kh2406_s2"], c["card_kh2406_s3"]], card_files(KH2406, KH2406_CARD), a["kh2406"], "KH-2406", "scalp")}
 {product_card(lang, "KH-2307", "name_kh2307", c["vendor_scalp"], c["card_kh2307_p"], [c["card_kh2307_s1"], c["card_kh2307_s2"], c["card_kh2307_s3"], c["card_kh2307_s4"]], card_files(KH2307, KH2307_CARD), a["kh2307"], "KH-2307", "scalp")}
+{scalp_cards}
+        </div>
+      </div>
+    </section>
+    <section class="product-section" id="facial" aria-labelledby="facial-title">
+      <div class="container">
+        <div class="product-section__heading"><div><div class="eyebrow">{esc(c["sec_face_eye"])}</div><h2 id="facial-title">{esc(c["sec_face_h2"])}</h2><p>{esc(c["sec_face_p"])}</p></div><span class="product-section__count">{esc(c["sec_face_count"])}</span></div>
+        <div class="product-grid">
+{face_cards}
         </div>
       </div>
     </section>
@@ -635,26 +649,25 @@ def gallery_block(lang: str, files, alt_list, model: str) -> str:
         </div>'''
 
 
-def build_detail(lang: str, model: str, files, alt_key: str, title_key: str, desc_key: str, lead_key: str, specs_key: str, steps_key: str, note_key: str, suit_key: str) -> str:
+def build_detail(lang: str, model: str, files, alt_list, title: str, desc: str, name: str, lead: str, spec_pairs, step_list, note: str, suit_list) -> str:
     c, u = PAGES[lang], UI[lang]
-    a = alts(lang)
     products = here(lang, "products.html", True)
     filename = f"products/{model.lower()}.html"
-    specs = "".join(f"<dt>{esc(k)}</dt><dd>{esc(v)}</dd>" for k, v in c[specs_key])
-    steps = "".join(f"<li>{esc(s)}</li>" for s in c[steps_key])
-    suit = "".join(f"<li>{esc(s)}</li>" for s in c[suit_key])
+    specs = "".join(f"<dt>{esc(k)}</dt><dd>{esc(v)}</dd>" for k, v in spec_pairs)
+    steps = "".join(f"<li>{esc(s)}</li>" for s in step_list)
+    suit = "".join(f"<li>{esc(s)}</li>" for s in suit_list)
     order = "".join(f"<li>{esc(c[k])}</li>" for k in ("order_1", "order_2", "order_3"))
     body = f'''    <section class="page-hero product-detail-hero">
       <div class="container">
         {breadcrumb(lang, True, (products, u["products"]), (None, model))}
         <div class="eyebrow">{esc(u["range"])}</div>
-        <h1>{esc(u[{"KH-2406": "name_kh2406", "KH-2307": "name_kh2307", "OB-1600": "name_ob1600"}[model]])}</h1>
-        <p>{esc(c[lead_key])}</p>
+        <h1>{esc(name)}</h1>
+        <p>{esc(lead)}</p>
       </div>
     </section>
     <section class="section product-detail">
       <div class="container detail-layout">
-        {gallery_block(lang, files, a[alt_key], model)}
+        {gallery_block(lang, files, alt_list, model)}
         <div class="detail-copy">
           <p class="detail-model">{model}</p>
           <div class="detail-block">
@@ -664,7 +677,7 @@ def build_detail(lang: str, model: str, files, alt_key: str, title_key: str, des
         <div class="detail-block">
           <h2>{esc(c["how_to"])}</h2>
           <ol class="detail-list">{steps}</ol>
-          <p class="detail-note">{esc(c[note_key])}</p>
+          <p class="detail-note">{esc(note)}</p>
         </div>
         <div class="detail-block">
           <h2>{esc(c["suitable"])}</h2>
@@ -686,8 +699,7 @@ def build_detail(lang: str, model: str, files, alt_key: str, title_key: str, des
       </div>
     </section>
 {quote_form(lang, nested=True, selected=model)}'''
-    # The h1 line above is messy; rebuild a clean heading below via a clearer mapping in a fix if needed.
-    return shell(lang, filename, c[title_key], c[desc_key], body, nested=True, extra_css=True, body_attr=f' data-product="{model}"')
+    return shell(lang, filename, title, desc, body, nested=True, extra_css=True, body_attr=f' data-product="{model}"')
 
 
 def build_details(lang: str) -> None:
@@ -696,10 +708,16 @@ def build_details(lang: str) -> None:
         ("KH-2307", KH2307, "kh2307", "d2307_title", "d2307_desc", "d2307_lead", "d2307_specs", "d2307_steps", "d2307_note", "suit_beauty"),
         ("OB-1600", OB1600, "ob1600", "d1600_title", "d1600_desc", "d1600_lead", "d1600_specs", "d1600_steps", "d1600_note", "suit_mattress"),
     ]
+    c, u = PAGES[lang], UI[lang]
+    a = alts(lang)
     name_key = {"KH-2406": "name_kh2406", "KH-2307": "name_kh2307", "OB-1600": "name_ob1600"}
     for model, files, alt_key, title_key, desc_key, lead_key, specs_key, steps_key, note_key, suit_key in mapping:
-        html = build_detail(lang, model, files, alt_key, title_key, desc_key, lead_key, specs_key, steps_key, note_key, suit_key)
-        # Replace messy h1 if the ternary produced a correct name anyway.
+        html = build_detail(lang, model, files, a[alt_key], c[title_key], c[desc_key], u[name_key[model]], c[lead_key], c[specs_key], c[steps_key], c[note_key], c[suit_key])
+        write(lang, f"products/{model.lower()}.html", html, nested=True)
+    for m in RANGE_MODELS:
+        cp = m["copy"][lang]
+        model = m["model"]
+        html = build_detail(lang, model, m["files"], [cp["alt"]] * len(m["files"]), f"{model} — AuraBridge", f"{model}: {cp['card_p']} {DESC_SUFFIX[lang]}", cp["name"], cp["card_p"], cp["specs"], cp["steps"], cp["note"], c[m["suit"]])
         write(lang, f"products/{model.lower()}.html", html, nested=True)
 
 
