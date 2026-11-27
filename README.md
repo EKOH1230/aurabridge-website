@@ -1,6 +1,6 @@
 # AuraBridge website
 
-A static B2B website for AuraBridge, a brand of Hong Kong Bright Bridge Group Co., Limited. It introduces the company and shows three products in the range: two scalp-care devices (KH-2406 and KH-2307) and one alternating-pressure air mattress (OB-1600).
+A static B2B website for AuraBridge, a brand of Hong Kong Bright Bridge Group Co., Limited. It introduces the company and shows the range in three groups: seven scalp-care devices (KH-2406, KH-2307, KH-2306A, KH-2401C, KH-2408, KH-2205, KH-2403A), two facial-care devices (SR-2003B, SR-1903), and one alternating-pressure air mattress (OB-1600).
 
 **View the website:** https://ekoh1230.github.io/aurabridge-website/
 
@@ -11,13 +11,15 @@ Open `index.html` in a browser, or serve the folder with any static file server.
 ## Pages
 
 - `index.html` — home
-- `products.html` — the three models, with scalp-care devices first and the air mattress last
+- `products.html` — all models, grouped as scalp care, facial care, and the air mattress
 - `about.html` — what AuraBridge does
 - `partnerships.html` — how a wholesale conversation can start
 - `contact.html` — addresses, email, phone, and the quote form
 - `legal.html` — legal notice
 - `privacy.html` — privacy policy
-- `products/kh-2406.html`, `products/kh-2307.html`, `products/ob-1600.html` — product detail pages
+- `products/<model>.html` — one detail page per model
+
+Copy for KH-2406, KH-2307 and OB-1600 lives in `scripts/content.py`. Copy, specs and images for the models added in November 2026 live in `scripts/range_products.py`.
 
 English is at the site root. Simplified Chinese, French, German, and Spanish copies are under `zh/`, `fr/`, `de/`, and `es/`. Shared assets live in `assets/`. The header mark is `assets/aurabridge-logo.png`, the original bridge drawing with heavier strokes.
 
